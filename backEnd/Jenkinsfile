@@ -1,0 +1,227 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'mvn'
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
+        SONARQUBE_TOKEN = 'squ_d01a8f16aeffc135c1bb88ceba65f1308f48047a'
+        SONARQUBE_SERVER = 'http://localhost:9000'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/chaimaaenaa/ConstructionXpert-Services---Microservices-Frontend-.git'
+            }
+        }
+
+        stage('Build & Test Microservices') {
+            parallel {
+                stage('Build & Test Gestion_utilisateurs') {
+                    steps {
+                        dir('backEnd/Gestion_utilisateurs') {
+                            withMaven(maven: 'mvn') {
+                                bat 'mvn clean package'
+                            }
+                        }
+                    }
+                }
+
+                stage('Build & Test project-service') {
+                    steps {
+                        dir('backEnd/project-service') {
+                            withMaven(maven: 'mvn') {
+                                bat 'mvn clean package'
+                            }
+                        }
+                    }
+                }
+
+                stage('Build & Test task-service') {
+                    steps {
+                        dir('backEnd/task-service') {
+                            withMaven(maven: 'mvn') {
+                                bat 'mvn clean package'
+                            }
+                        }
+                    }
+                }
+
+                stage('Build & Test resource-service') {
+                    steps {
+                        dir('backEnd/resource-service') {
+                            withMaven(maven: 'mvn') {
+                                bat 'mvn clean package'
+                            }
+                        }
+                    }
+                }
+
+                stage('Build & Package Gateway_service') {
+                    steps {
+                        dir('backEnd/Gateway_service') {
+                            withMaven(maven: 'mvn') {
+                                bat 'mvn clean package'
+                            }
+                        }
+                    }
+                }
+
+                stage('Build & Test discovery-service') {
+                    steps {
+                        dir('backEnd/discovery-service') {
+                            withMaven(maven: 'mvn') {
+                                bat 'mvn clean package'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQubeScanner'
+
+                    dir('backEnd/Gestion_utilisateurs') {
+                        bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=Gestion_utilisateurs -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=${SONARQUBE_TOKEN} -Dsonar.java.binaries=target/classes"
+                    }
+
+                    dir('backEnd/project-service') {
+                        bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=project-service -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=${SONARQUBE_TOKEN} -Dsonar.java.binaries=target/classes"
+                    }
+
+                    dir('backEnd/task-service') {
+                        bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=task-service -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=${SONARQUBE_TOKEN} -Dsonar.java.binaries=target/classes"
+                    }
+
+                    dir('backEnd/resource-service') {
+                        bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=resource-service -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=${SONARQUBE_TOKEN} -Dsonar.java.binaries=target/classes"
+                    }
+
+                    dir('backEnd/Gateway_service') {
+                        bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=Gateway_service -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=${SONARQUBE_TOKEN} -Dsonar.java.binaries=target/classes"
+                    }
+
+                    dir('backEnd/discovery-service') {
+                        bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=discovery-service -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=${SONARQUBE_TOKEN} -Dsonar.java.binaries=target/classes"
+                    }
+                }
+            }
+        }
+
+         stage('Build Docker Images & Push') {
+                    parallel {
+                        stage('Build Docker & Push for Gestion_utilisateurs') {
+                            steps {
+                                dir('backEnd/Gestion_utilisateurs') {
+                                    script {
+
+                                        bat 'docker context use default'
+
+                                        def dockerImage = docker.build("zinebaz/user-service:${env.TAG_VERSION ?: 'latest'}")
+                                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                                            dockerImage.push()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build Docker & Push for project-service') {
+                            steps {
+                                dir('backEnd/project-service') {
+                                    script {
+
+                                        bat 'docker context use default'
+
+                                        def dockerImage = docker.build("zinebaz/projet-service:${env.TAG_VERSION ?: 'latest'}")
+                                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                                            dockerImage.push()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build Docker & Push for task-service') {
+                            steps {
+                                dir('backEnd/task-service') {
+                                    script {
+
+                                        bat 'docker context use default'
+
+                                        def dockerImage = docker.build("zinebaz/tache-service:${env.TAG_VERSION ?: 'latest'}")
+                                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                                            dockerImage.push()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build Docker & Push for resource-service') {
+                            steps {
+                                dir('backEnd/resource-service') {
+                                    script {
+
+                                        bat 'docker context use default'
+
+                                        def dockerImage = docker.build("zinebaz/resource-service:${env.TAG_VERSION ?: 'latest'}")
+                                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                                            dockerImage.push()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build Docker & Push for Gateway_service') {
+                            steps {
+                                dir('backEnd/Gateway_service') {
+                                    script {
+
+                                        bat 'docker context use default'
+
+                                        def dockerImage = docker.build("zinebaz/gateway-service:${env.TAG_VERSION ?: 'latest'}")
+                                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                                            dockerImage.push()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        stage('Build Docker & Push for discovery-service') {
+                            steps {
+                                dir('backEnd/discovery-service') {
+                                    script {
+
+                                        bat 'docker context use default'
+
+                                        def dockerImage = docker.build("zinebaz/discovery-service:${env.TAG_VERSION ?: 'latest'}")
+                                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                                            dockerImage.push()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                dir('backEnd') {
+                    bat 'dir'
+                    bat 'docker-compose up'
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+<div class="ressource-list-container"></div>
+<button mat-raised-button color="primary" class="add-ressource-button" [routerLink]="['add']">
+  <mat-icon>add</mat-icon>
+  Add New Ressource
+</button>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+   <!-- Columns definitions -->
+
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> ID </th>
+    <td mat-cell *matCellDef="let ressource"> {{ ressource.id }} </td>
+  </ng-container>
+  <ng-container matColumnDef="taskId">
+    <th mat-header-cell *matHeaderCellDef> idTache </th>
+    <td mat-cell *matCellDef="let task"> {{ task.taskId }} </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let ressource"> {{ ressource.name }} </td>
+  </ng-container>
+
+  <!-- Type Column -->
+  <ng-container matColumnDef="type">
+    <th mat-header-cell *matHeaderCellDef> Type </th>
+    <td mat-cell *matCellDef="let ressource"> {{ ressource.type }} </td>
+  </ng-container>
+
+  <!-- Quantity Column -->
+  <ng-container matColumnDef="quantity">
+    <th mat-header-cell *matHeaderCellDef> Quantity </th>
+    <td mat-cell *matCellDef="let ressource"> {{ ressource.quantity }} </td>
+  </ng-container>
+
+  <!-- Action Column -->
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef> Action </th>
+    <td mat-cell *matCellDef="let element">
+      <div class="font-icone-style">
+        <a [routerLink]="['view', element.id]"><mat-icon>visibility</mat-icon></a> |
+        <a [routerLink]="['edit', element.id]"><mat-icon>edit</mat-icon></a> |
+        <a [routerLink]="['delete', element.id]"><mat-icon>delete</mat-icon></a>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>

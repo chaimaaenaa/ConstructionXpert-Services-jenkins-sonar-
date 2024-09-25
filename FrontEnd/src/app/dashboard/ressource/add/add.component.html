@@ -1,0 +1,35 @@
+<div class="task-form">
+  <form [formGroup]="ressourceForm" (ngSubmit)="addRessource()">
+    <div>
+      <label for="nom">Ressource Name</label>
+      <input id="nom" formControlName="nom" type="text" />
+    </div>
+
+    <div>
+      <label for="typee">Type</label>
+      <select id="typee" formControlName="typee">
+        <option value="MATERIAL">Material</option>
+        <option value="SERVICE">Service</option>
+        <option value="TOOL">Tool</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="quantity">Quantity</label>
+      <input id="quantity" formControlName="quantity" type="number" />
+    </div>
+
+    <div>
+      <label for="taskId">Task</label>
+      <select id="taskId" formControlName="taskId">
+        <option *ngFor="let task of tasks" [value]="task.id">
+          {{ task.description }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <button type="submit" [disabled]="ressourceForm.invalid">Add Ressource</button>
+    </div>
+  </form>
+</div>

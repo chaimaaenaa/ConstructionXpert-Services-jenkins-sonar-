@@ -1,0 +1,26 @@
+<div class="edit-container" *ngIf="ressourceForm">
+    <h2>Edit Project</h2>
+    <form [formGroup]="ressourceForm" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <input matInput placeholder="Name" formControlName="name">
+        <mat-error *ngIf="ressourceForm.get('name')?.hasError('required')">Name is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <textarea matInput placeholder="type" formControlName="type"></textarea>
+      </mat-form-field>
+
+
+      <mat-form-field>
+        <input matInput type="number" placeholder="quantity" formControlName="quantity">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="taskId" formControlName="taskId">
+      </mat-form-field>
+
+      <div class="button-group">
+        <button mat-raised-button color="primary" type="submit" [disabled]="ressourceForm.invalid">Save Changes</button>
+        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+      </div>
+    </form>
+  </div>

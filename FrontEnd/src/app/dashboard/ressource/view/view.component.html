@@ -1,0 +1,19 @@
+<div class="ressource-details-container">
+    <div class="ressource-card">
+      <div class="ressource-card__header">
+        <h1 class="ressource-card__title">Ressource Details</h1>
+      </div>
+      <div class="ressource-card__content">
+        <div class="ressource-info">
+          <h2 class="ressource-info__name">Ressource Name: <span>{{ ressource.name }}</span></h2>
+          <div class="ressource-info__grid">
+            <p class="ressource-info__item"><strong>Start Date:</strong> <span>{{ ressource.quantity }}</span></p>
+            <p class="ressource-info__item"><strong>End Date:</strong> <span>{{ ressource.type }}</span></p>
+            <p class="ressource-info__item"><strong>Budget:</strong> <span>${{ ressource.taskId }}</span></p>
+          </div>
+        </div>
+        <button class="btn btn--primary" (click)="goBack()">Go Back</button>
+      </div>
+    </div>
+  </div>
+

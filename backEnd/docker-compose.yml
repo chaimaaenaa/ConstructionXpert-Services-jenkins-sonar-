@@ -1,0 +1,140 @@
+version: "3.8"
+
+services:
+  discovery-service:
+    image: zinebaz/discovery-service:latest
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_SECURITY_USER_NAME=admin
+      - SPRING_SECURITY_USER_PASSWORD=admin
+    networks:
+      - microservices-net
+
+  gateway-service:
+    image: zinebaz/gateway-service:latest
+    ports:
+      - "8765:8765"
+    depends_on:
+      - discovery-service
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+    networks:
+      - microservices-net
+
+  project-service:
+    image: zinebaz/projet-service:latest
+    ports:
+      - "8082:8082"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://projetdb:3306/projets_db2
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+    depends_on:
+      - discovery-service
+      - projetdb
+    networks:
+      - microservices-net
+
+  ressource-service:
+    image: zinebaz/resource-service:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://ressourcedb:3306/resource_db2
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+    depends_on:
+      - discovery-service
+      - ressourcedb
+    networks:
+      - microservices-net
+
+  tache-service:
+    image: zinebaz/tache-service:latest
+    ports:
+      - "8083:8083"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://tachedb:3306/task_db2
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+    depends_on:
+      - discovery-service
+      - tachedb
+    networks:
+      - microservices-net
+
+  user-service:
+    image: zinebaz/user-service:latest
+    ports:
+      - "8084:8084"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://userdb:3306/user_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+    depends_on:
+      - discovery-service
+      - userdb
+    networks:
+      - microservices-net
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  projetdb:
+    image: "mysql:latest"
+    restart: always
+    environment:
+      MYSQL_DATABASE: projets_db2
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - projet-db:/var/lib/mysql
+    networks:
+      - microservices-net
+
+  ressourcedb:
+    image: "mysql:latest"
+    restart: always
+    environment:
+      MYSQL_DATABASE: resource_db2
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ressource-db:/var/lib/mysql
+    networks:
+      - microservices-net
+
+  tachedb:
+    image: "mysql:latest"
+    restart: always
+    environment:
+      MYSQL_DATABASE: task_db2
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - tache-db:/var/lib/mysql
+    networks:
+      - microservices-net
+
+  userdb:
+    image: "mysql:latest"
+    restart: always
+    environment:
+      MYSQL_DATABASE: user_db
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - user-db:/var/lib/mysql
+    networks:
+      - microservices-net
+
+volumes:
+  projet-db:
+  ressource-db:
+  tache-db:
+  user-db:
+
+networks:
+  microservices-net:
+    driver: bridge

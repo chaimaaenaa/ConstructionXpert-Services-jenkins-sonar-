@@ -1,0 +1,19 @@
+<div class="project-details-container" *ngIf="projet">
+  <div class="project-card">
+    <div class="project-card__header">
+      <h1 class="project-card__title">Project Details</h1>
+    </div>
+    <div class="project-card__content">
+      <div class="project-info">
+        <h2 class="project-info__name">Project Name: <span>{{ projet.name }}</span></h2>
+        <div class="project-info__grid">
+          <p class="project-info__item"><strong>Start Date:</strong> <span>{{ projet.startDate }}</span></p>
+          <p class="project-info__item"><strong>End Date:</strong> <span>{{ projet.endDate }}</span></p>
+          <p class="project-info__item"><strong>Budget:</strong> <span>${{ projet.budget }}</span></p>
+        </div>
+        <p class="project-info__description"><strong>Description:</strong> <span>{{ projet.description }}</span></p>
+      </div>
+      <button class="btn btn--primary" (click)="goBack()">Go Back</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+
+<div class="project-list-container"></div>
+  <button mat-raised-button color="primary" class="add-project-button" [routerLink]="['add']">
+    <mat-icon>add</mat-icon>
+    Add New Project
+  </button>
+
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <!-- Columns definitions -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> ID </th>
+    <td mat-cell *matCellDef="let projet"> {{ projet.id }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let projet"> {{ projet.name }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="description">
+    <th mat-header-cell *matHeaderCellDef> Description </th>
+    <td mat-cell *matCellDef="let projet"> {{ projet.description }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="startDate">
+    <th mat-header-cell *matHeaderCellDef> Start Date </th>
+    <td mat-cell *matCellDef="let projet"> {{ projet.startDate }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="endDate">
+    <th mat-header-cell *matHeaderCellDef> End Date </th>
+    <td mat-cell *matCellDef="let projet"> {{ projet.endDate }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="budget">
+    <th mat-header-cell *matHeaderCellDef> Budget </th>
+    <td mat-cell *matCellDef="let projet"> {{ projet.budget }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef>Action</th>
+    <td mat-cell *matCellDef="let element">
+      <div class="font-icone-style">
+        <a [routerLink]="['view', element.id]"><mat-icon aria-hidden="false">visibility</mat-icon></a> |
+        <a [routerLink]="['edit', element.id]"><mat-icon aria-hidden="false">edit</mat-icon></a> |
+        <a [routerLink]="['delete', element.id]"><mat-icon aria-hidden="false">delete</mat-icon></a>
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- Table Header -->
+  <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+  <!-- Table Rows -->
+  <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+</table>
+
+<!-- Paginator -->
+<mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>

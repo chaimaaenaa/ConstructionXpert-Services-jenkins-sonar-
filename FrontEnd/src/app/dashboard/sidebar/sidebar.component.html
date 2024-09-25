@@ -1,0 +1,39 @@
+<mat-nav-list>
+  <div *ngIf="userRole === 'USER'">
+    <a mat-list-item routerLink="/dashboard/projet">
+      <span class="material-icons" style="font-size: 16px; margin: 3px; color: lightseagreen;">work_outline</span>
+      Manage Projects
+    </a>
+    <a mat-list-item routerLink="/dashboard/task">
+      <span class="material-icons" style="font-size: 16px; margin: 3px; color: lightblue;">assignment</span>
+      Manage Tasks
+    </a>
+    <a mat-list-item routerLink="/dashboard/ressource">
+      <span class="material-icons" style="font-size: 16px; margin: 3px; color: lightpink;">supervisor_account</span>
+      Manage Resources
+    </a>
+    <a mat-list-item routerLink="/logout">
+      <span class="material-icons" style="font-size: 16px; margin: 3px; color: tomato;">logout</span>
+      Log out
+    </a>
+  </div>
+
+  <div *ngIf="userRole === 'ADMIN'">
+    <a mat-list-item routerLink="/dashboard/my-projects">
+      <span class="material-icons" style="font-size: small; margin: 3px; color: lightgreen;">work</span>
+      Projects
+    </a>
+    <a mat-list-item routerLink="/dashboard/tasks">
+      <span class="material-icons" style="font-size: 16px; margin: 3px; color: lightblue;">assignment</span>
+       Tasks
+    </a>
+    <a mat-list-item routerLink="/dashboard/resources">
+      <span class="material-icons" style="font-size: 16px; margin: 3px; color: lightpink;">supervisor_account</span>
+       Resources
+    </a>
+    <a mat-list-item routerLink="/logout">
+      <span class="material-icons" style="font-size: small; margin: 3px; color: tomato;">logout</span>
+      Log out
+    </a>
+  </div>
+</mat-nav-list>
